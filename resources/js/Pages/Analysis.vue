@@ -5,6 +5,7 @@ import { reactive, onMounted } from "vue";
 import { getToday } from "@/common";
 import axios from "axios";
 import Chart from "@/Components/Chart.vue";
+import ResultTable from "@/Components/ResultTable.vue";
 
 onMounted(() => {
     form.startDate = getToday();
@@ -33,6 +34,7 @@ const getData = async () => {
                 data.value = res.data.data;
                 data.labels = res.data.labels;
                 data.totals = res.data.totals;
+                data.type = res.data.type;
                 console.log(res.data);
             });
     } catch (e) {
@@ -56,6 +58,28 @@ const getData = async () => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="getData">
+                            分析方法<br />
+                            <input
+                                type="radio"
+                                v-model="form.type"
+                                value="perDay"
+                                checkd
+                            />日別
+                            <input
+                                type="radio"
+                                v-model="form.type"
+                                value="perMonth"
+                            />月別
+                            <input
+                                type="radio"
+                                v-model="form.type"
+                                value="perYear"
+                            />年別
+                            <input
+                                type="radio"
+                                v-model="form.type"
+                                value="decile"
+                            />デシル分析<br />
                             From:
                             <input
                                 type="date"
@@ -76,6 +100,7 @@ const getData = async () => {
                         </form>
 
                         <Chart :data="data" />
+                        <ResultTable :data="data" />
 
                         <div
                             v-show="data.value"
